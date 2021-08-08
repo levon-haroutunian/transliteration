@@ -1,0 +1,14 @@
+name: translit-env
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - pip
+  - ipython
+  - scipy
+  - pandas
+  - matplotlib
+  - console_shortcut
+  - spyder
+prefix: .\translit-env

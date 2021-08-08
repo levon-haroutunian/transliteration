@@ -1,0 +1,55 @@
+# ROMANIZATION KEY FOR EASTERN ARMENIAN
+#
+# format: [lowercase char] --- [more common]; [less common]
+# for instance, the line 'ը --- y, @; e, <null>' indicates that the
+# character ը is usually romanized as y or @, but may also be
+# romanized as e or omitted altogether less frequently. 
+# Both [more common] and [less common] may be lists or singletons, 
+# and [less common] may be empty.
+#
+# Any initial lines starting with '#' will be ignored.
+
+ա --- a;
+բ --- b; p
+գ --- g; k, q, c 
+դ --- d; t
+ե --- e; ye
+զ --- z;
+է --- e;
+ը --- y, @; e, <null>
+թ --- t; th
+ժ --- j, zh; g
+ի --- i; ee
+լ --- l;
+խ --- kh, x; gh
+ծ --- ts; c, &
+կ --- k; g
+հ --- h;
+ձ --- dz, tz; z
+ղ --- gh, x; kh
+ճ --- j, ch; tch, c 
+մ --- m; 
+յ --- y; i, j
+ն --- n;
+շ --- sh; sch, s
+ո --- o; vo
+ու --- u; oo
+չ --- ch; 4, c
+պ --- p; b
+ջ --- j, g; dj
+ռ --- r; 
+ս --- s; 
+վ --- v; w
+տ --- t; d
+ր --- r; 
+ց --- c; ts
+փ --- p; 
+ք --- q; k 
+և --- ev; yev
+եւ --- ev; yev
+օ --- o; 
+ֆ --- f; 
+։ --- .;
+« --- ';
+» --- ';
+․ --- .;
