@@ -6,15 +6,16 @@
  
 ## Current status
 
-This model is in its initial stages. Two completed components are availabe in this repository at the moment.
+This model is in its initial stages. The preprocessing components are completed and available for use, while the model itself is currently under construction.
 
-* __preprocessing.py__ is a script for further preparing the output of a wikidump processed using [WikiExtractor](https://github.com/attardi/wikiextractor). The output of preprocessing.py is a directory with the same substructure as the input directory (ie, extracted the wikidump), and each document within is free of all Wikipedia Document ID tags and has one sentence (or text segment) per line. For instance, to separate text by periods, you would use the following command:
+## Setting up
 
-`python3 preprocessing.py --in_dir [path to input directory] --out_dir [path to output directory] --seps '.' --encoding [encoding]`
+This project uses a conda environment, `translit-env.yml`. Once you have Anaconda installed, create the environment and activate it using the following commands:
 
-And to separate by periods and commas, you would use `--seps '.,'`. The encoding argument is optional; utf8 is the default value.
+`conda env create -f translit-env.yml`
+`conda activate translit-env`
 
-* __romanization.py__ is a script for generating artificial Romanized text when no labelled data is available. It requires a handwritten Romanization key; see __hye_translit_key.txt__ for a formatted example. A character may have any number of ways it can be Romanized, and the Romanization candidates can be separated into more likely and less likely options.
+## Preprocessing
 
-`python3 romanization.py --key [Romanization key] --in_dir [path to input directory] --out_dir [path to output directory] --prop_typical [probability weight assigned to more likely Romanization option] --encoding [encoding]` 
+See the `/Preprocessing/` readme for sample commands.
 

@@ -2,13 +2,15 @@
 """
     Module for dataset class (TranslitDataset)
 """
-import numpy as np
+
 from typing import Any, Callable, Iterable
+import numpy as np
 from vocab import Vocabulary
 
-# TODO: type aliases
+# type aliases
 Datum = dict[str, Any]
 
+# constants
 ORIG = "original"
 TRANSLIT = "transliteration"
 

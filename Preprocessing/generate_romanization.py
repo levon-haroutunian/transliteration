@@ -1,6 +1,7 @@
 """
     Script for generating artificially romanized data using 
     handwritten romanization template.
+    
 """
 
 import re, random, argparse, glob

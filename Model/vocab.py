@@ -1,6 +1,7 @@
 """
     Module for Vocabulary class
 """
+
 from typing import Iterable
 from collections import Counter
 from pathlib import Path
@@ -11,8 +12,8 @@ BOS = "<BOS>"
 EOS = "<EOS>"
 
 class Vocabulary:
-    def __init__(self, tokens: Counter[str, int], 
-                 specials: list = [], min_freq: int = 1) -> None:
+    def __init__(self, tokens, 
+                 specials = [], min_freq = 1):
         """
         Builds a Vocabulary object using a Counter of token: count entries.
 
@@ -47,14 +48,14 @@ class Vocabulary:
         self.token_to_index = {self.index_to_token[i]: i for 
                                i in range(len(self.index_to_token))}
     
-    def __len__(self) -> int:
+    def __len__(self):
         """
         Returns length of vocabulary
 
         """
         return len(self.index_to_token)
     
-    def __getindex__(self, token: str) -> int:
+    def __getindex__(self, token: str):
         """
         Returns index of a token, or index of UNK
 
@@ -64,7 +65,7 @@ class Vocabulary:
         else:
             return(self.token_to_index[UNK])
         
-    def tokens_to_indices(self, tokens: list[str]) -> list[int]:
+    def tokens_to_indices(self, tokens):
         """
         Given a list of tokens in the vocabulary, returns a list of 
         corresponding indices
@@ -73,8 +74,8 @@ class Vocabulary:
         return([self.__getindex__(t) for t in tokens])
     
     @classmethod
-    def chars_from_files(cls, files: Iterable[str], 
-                         enc: str = "utf8", **kwargs):
+    def chars_from_files(cls, files, 
+                         enc = "utf8", **kwargs):
         """
         Builds a character-level vocabulary from a list of files.
         Returns a Vocabulary object
@@ -86,8 +87,11 @@ class Vocabulary:
         for f in files:
             if Path(f).is_file():
                 with open(f, "r", encoding=enc) as file:
-                    for line in file.readlines():
-                        chars = list(line.strip("\n"))
+                    lines = file.readlines()
+                    lines = [''.join(line.split()) for line in lines]
+                    
+                    for line in lines:
+                        chars = list(line)
                         tokens.update(chars)
                         
         return(cls(tokens, **kwargs))
