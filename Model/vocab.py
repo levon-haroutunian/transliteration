@@ -13,7 +13,7 @@ EOS = "<EOS>"
 
 class Vocabulary:
     def __init__(self, tokens, 
-                 specials = [], min_freq = 1):
+                 specials: list = [], min_freq = 1):
         """
         Builds a Vocabulary object using a Counter of token: count entries.
 
@@ -36,7 +36,7 @@ class Vocabulary:
         self.index_to_token = []
         
         # special tokens first; ensure that they aren't double counted
-        self.index_to_token.extend(specials)
+        self.index_to_token.extend(self.specials)
         
         for s in specials:
             del self.tokens[s]
@@ -74,7 +74,7 @@ class Vocabulary:
         return([self.__getindex__(t) for t in tokens])
     
     @classmethod
-    def chars_from_files(cls, files, 
+    def from_files(cls, files: list[str], 
                          enc = "utf8", **kwargs):
         """
         Builds a character-level vocabulary from a list of files.

@@ -2,13 +2,16 @@ name: translit-env
 channels:
   - defaults
 dependencies:
+  - console_shortcut
+  - pandas
   - python=3.9
+  - matplotlib
   - numpy
+  - spyder
+  - scipy
   - pip
   - ipython
-  - scipy
-  - pandas
-  - matplotlib
-  - console_shortcut
-  - spyder
-prefix: .\translit-env
+  - transformers
+  - pytorch
+  - cudatoolkit=10.2
+prefix: /home/levon/anaconda3/envs/translit-env

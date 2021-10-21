@@ -1,74 +1,93 @@
-# -*- coding: utf-8 -*-
 """
-    Module for dataset class (TranslitDataset)
+    Module for dataset objects RomanizationDataset and
+    RomanizationDataLoader, which inherit from corresponding
+    torch classes
 """
 
+import torch
+
+from torch.utils.data import DataLoader, Dataset
+from torch import Tensor
 from typing import Any, Callable, Iterable
-import numpy as np
+
 from vocab import Vocabulary
 
 # type aliases
-Datum = dict[str, Any]
+Datum = list[list, list]
 
 # constants
-ORIG = "original"
-TRANSLIT = "transliteration"
+PAD = "<PAD>"
 
-class Dataset:
+class RomanizationDataset(Dataset):
     def __init__(self, data: list[Datum], source_vocab: Vocabulary,
                  target_vocab: Vocabulary) -> None:
+        super().__init__()
         self.data = data
-           
-    def data_to_tensors(self, index: int) -> dict[str, np.ndarray]:
-        raise NotImplementedError
-
-    def batch_tensors(self, start: int, end: int) -> dict[str, np.ndarray]:
-        raise NotImplementedError
-
-    def __getitem__(self, idx: int) -> Datum:
-        return self.data[idx]
-
-    def __len__(self) -> int:
-        return len(self.data)
+        self.src_vocab = source_vocab
+        self.tgt_vocab = target_vocab
+        
+    def __getitem__(self, index) -> Datum:
+        return(self.data[index])
     
-class TranslitDataset(Dataset):
-    def __init__(self, source_data: list[str], source_vocab: Vocabulary,
-                 translit_data: list[str] = None, translit_key: str = None, 
-                 target_vocab: Vocabulary = None) -> None:
+    def __len__(self) -> int:
+        return(len(self.data))
         
-        if (not translit_data and not translit_key) or \
-        (translit_data and translit_key):
-            raise Exception("ERROR: Must include either transliterated \
-                            data OR a transliteration key.")
-        
-        if translit_key:
-            # TODO: make translit vocab
-            # TODO: make translit object
-            pass
-        
-        if not translit_data:
-            # TODO: use translit object to translit each sentence
-            translit_data = None
-            
-            
-        # create list[Datum] using source and translit data
-        data = []
-        
-        for i in range(len(source_data)):
-            data.append({ORIG: source_data[i], 
-                            TRANSLIT: translit_data[i]})
-
-        
-        super(TranslitDataset, self).__init__(data, source_vocab,
-                                              target_vocab)
-      
-        
-    def translit_line(self):
-         pass
-        
-    # TODO
     @classmethod
-    def from_files(cls, source_dir: str, target_dir: str, 
-                   delim: Iterable = None, vocab: Vocabulary = None):
-        data = None
-        return cls(data, vocab)
+    def from_files(cls, src_files: list[str], tgt_files: list[str], 
+                   min_freq: int = 1, encoding: str = 'utf8'):
+        # make source and target vocab objects
+        src_vocab = Vocabulary.from_files(src_files, specials = [PAD],
+                                          min_freq = min_freq)
+        tgt_vocab = Vocabulary.from_files(tgt_files, specials = [PAD],
+                                          min_freq = min_freq)
+        
+        # convert files to list of indices
+        data: list[Datum] = []
+        for i in range(len(src_files)):
+            src_lines = open(src_files[i], encoding=encoding).readlines()
+            tgt_lines = open(tgt_files[i], encoding=encoding).readlines()
+            
+            for j in range(len(src_lines)):
+                # make lists of chars
+                src = list(''.join(src_lines[j].split()))
+                tgt = list(''.join(tgt_lines[j].split()))
+                
+                data.append([src_vocab.tokens_to_indices(src), 
+                             tgt_vocab.tokens_to_indices(tgt)])
+                
+        return RomanizationDataset(data, src_vocab, tgt_vocab)  
+    
+class RomanizationDataLoader(DataLoader):
+    def __init__(self, data: RomanizationDataset, batch_size: int = 256, **kwargs):
+        self.dataset = data
+        super().__init__(self.dataset, batch_size = batch_size,
+                         shuffle=True, collate_fn = self.pad_batches,
+                         **kwargs)
+    
+    @classmethod
+    def pad_batches(cls, samples):
+        # pad index must be 0
+        x = [s[0] for s in samples]
+        y = [s[1] for s in samples]
+        
+        max_x_len = max([len(s) for s in x])
+        max_y_len = max([len(s) for s in y])
+    
+        for s in x:
+            while len(s) < max_x_len:
+                s.append(0)
+                
+        for s in y:
+            while len(s) < max_y_len:
+                s.append(0)
+                
+        return Tensor(x), Tensor(y)
+    
+    @classmethod
+    def from_files(cls, src_files: list[str], tgt_files: list[str],
+                    min_freq: int = 1, **kwargs):       
+         dataset = RomanizationDataset.from_files(src_files, tgt_files,
+                                                  min_freq=min_freq)
+         return RomanizationDataLoader(data=dataset, **kwargs)
+        
+    

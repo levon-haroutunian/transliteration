@@ -82,8 +82,13 @@ class Romanizer:
             return('')
         
         elif char in self.char_probs:
-            return(random.choices(self.char_probs[char][0], 
-                                  cum_weights=self.char_probs[char][1])[0])
+            new_char = random.choices(self.char_probs[char][0], 
+                                  cum_weights=self.char_probs[char][1])[0]
+            if new_char == NULL:
+                return('')
+            else:
+                return new_char
+            
         else:
             return(char)
     
